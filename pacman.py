@@ -5,6 +5,7 @@ from freegames import floor, vector
 state = {'score': 0}
 path = Turtle(visible=False)
 writer = Turtle(visible=False)
+size = ("arial")
 aim = vector(5, 0)
 pacman = vector(-40, -80)
 ghosts = [
@@ -140,7 +141,7 @@ def move():
         if abs(pacman - point) < 20:
             return
 
-    ontimer(move, 100)
+    ontimer(move, 30)
 
 
 def change(x, y):
@@ -153,9 +154,9 @@ def change(x, y):
 setup(420, 420, 370, 0)
 hideturtle()
 tracer(False)
-writer.goto(160, 160)
-writer.color('white')
-writer.write(state['score'])
+writer.goto(140, 140)
+writer.color('red')
+writer.write((state['score']), font=("Arial", 20))
 listen()
 onkey(lambda: change(5, 0), 'Right')
 onkey(lambda: change(-5, 0), 'Left')
