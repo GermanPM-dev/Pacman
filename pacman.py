@@ -1,11 +1,11 @@
 from random import choice
 from turtle import *
 from freegames import floor, vector
+import math
 
 state = {'score': 0}
 path = Turtle(visible=False)
 writer = Turtle(visible=False)
-size = ("arial")
 aim = vector(5, 0)
 pacman = vector(-40, -80)
 ghosts = [
@@ -38,7 +38,7 @@ tiles = [
 ]
 
 
-def square(x, y):
+def square(x, y):  # dibuja los cuadrados en el mundo
     "Draw square using path at (x, y)."
     path.up()
     path.goto(x, y)
@@ -94,7 +94,7 @@ def world():
                 path.dot(2, 'white')
 
 
-def move():
+def move():  # esto hace mover al pacman y a los fantasmas
     "Move pacman and all ghosts."
     writer.undo()
     writer.write(state['score'])
@@ -117,7 +117,7 @@ def move():
     goto(pacman.x + 10, pacman.y + 10)
     dot(20, 'yellow')
 
-    for point, course in ghosts:
+    for point, course in ghosts:  # esto hara que los fantasmas sigan al pacman
         if valid(point + course):
             point.move(course)
         else:
@@ -127,7 +127,47 @@ def move():
                 vector(0, 5),
                 vector(0, -5),
             ]
+            # get pacman offset
+            poff = offset(pacman)
+            pcol = poff % 20
+            pren = math.floor(poff/20)
+
+            # get ghost offset
+            goff = offset(point)
+            gcol = goff % 20
+            gren = math.floor(goff/20)
+
+            if(pcol < gcol and pren < gren):
+                # elegir arriba o a la izq
+                options = [
+                    vector(-5, 0),
+                    vector(0, 5),
+                ]
+
+            if(pcol > gcol and pren < gren):
+                # elegir arriba o a la der
+                options = [
+                    vector(5, 0),
+                    vector(0, 5),
+                ]
+
+            if(pcol < gcol and pren > gren):
+                # elegir abajo o a la izq
+                options = [
+                    vector(-5, 0),
+                    vector(0, -5),
+                ]
+
+            if(pcol > gcol and pren > gren):
+                # elegir abajo o a la der
+                options = [
+                    vector(5, 0),
+                    vector(0, -5),
+                ]
+
+            # escoger alguna opción
             plan = choice(options)
+
             course.x = plan.x
             course.y = plan.y
 
@@ -156,7 +196,7 @@ hideturtle()
 tracer(False)
 writer.goto(140, 140)
 writer.color('red')
-writer.write((state['score']), font=("Arial", 20))
+writer.write((state['score']), font=("Arial", 20, 'normal'))
 listen()
 onkey(lambda: change(5, 0), 'Right')
 onkey(lambda: change(-5, 0), 'Left')
